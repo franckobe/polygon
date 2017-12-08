@@ -3,13 +3,11 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .form import *
 from .models import User
-
-# Create your views here.
-
 from django.contrib.auth import authenticate, login
 
-def connexion(request):
 
+# Create your views here.
+def connexion(request):
     if request.method == "POST":
         form = ConnexionForm(request.POST or None)
         if form.is_valid():
@@ -23,24 +21,27 @@ def connexion(request):
 
     return render(request, 'login.html', locals())
 
+
 @login_required(login_url="/Login/")
 def Index(request):
     return redirect('Index.html')
+
 
 #@logout
 def Logout(request):
     logout(request)
     return redirect('login.html')
 
-def Register(request):
+
+def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST or None)
         if form.is_valid():
             username = form.cleaned_data["username"]
             if form.password == form.passwordVerif:
                 password = form.cleaned_data["password"]
-        user = User(password = password, username = username)
-        user.save()
+                user = User(password=password, username=username)
+                user.save()
     else:
         form = RegisterForm()
 

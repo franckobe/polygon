@@ -9,6 +9,9 @@
 
 #Search engine called Polygon
 
+## App
+### SuperUser : root -> rootroot
+
 ## Database
 ### On utilise un trigrame pour differencier les tables rapidement et favoriser l'indentation
 

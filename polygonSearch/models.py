@@ -9,6 +9,6 @@ class User(models.Model):
 
     # ToDo set permission (1-2-3 / admin-user-superuser
     # editable = false, le champ sera exclus du form, pas la peine de le cacher
-    typeUtil = models.IntegerField(max_length=1, editable=False)
+    typeUtil = models.IntegerField(editable=False)
 
 
