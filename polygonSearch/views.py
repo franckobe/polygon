@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate, login , logout
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .form import *
 from .models import User
 from django.contrib.auth import authenticate, login
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 # Create your views here.
@@ -46,6 +48,25 @@ def register(request):
         form = RegisterForm()
 
     return render(request, 'login.html', locals())
+
+@staff_member_required
+def del_user(request, username):
+    try:
+        u = User.objects.get(username = username)
+        u.delete()
+        messages.sucess(request, "The user is deleted")
+
+    #ToDo ne pas renvoyer sur la page Index mais sur la page d'acceuil de l'admin
+    #Todo A créer page d'admin
+    except User.DoesNotExist:
+        messages.error(request, "User doesnot exist")
+        return render(request, 'index.html')
+    # ToDo ne pas renvoyer sur la page Index mais sur la page d'acceuil de l'admin
+    except Exception as e:
+        return render(request, 'index.html',{'err':e.message})
+
+    # ToDo ne pas renvoyer sur la page Index mais sur la page d'acceuil de l'admin
+    return render(request, 'index.html')
 
 
 

@@ -1,1 +1,6 @@
 <p> Vous êtes loggé {{ user.username }}</p>
+{% if supprOk %}
+    <p>La suppression s'est déroulé correctement</p>
+    {% else %}
+        <p>Echec de la suppression</p>
+{% endif %}
