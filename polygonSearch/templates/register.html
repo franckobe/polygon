@@ -3,3 +3,14 @@
 {% endif %}
 
 <p>Inscription à Polygone, le moteur de recherche sous tous les angles</p>
+<form action="{% url 'register' %}" method="post">
+    {% csrf_token %}
+    <label for="username">Username</label>
+    <input type="text" name="username"  id="username">
+    <label for="password">Password</label>
+    <input type="text" name="password"  id="password">
+    <label for="passwordVerif"></label>
+    <input type="text" name="passwordVerif"  id="passwordVerif">
+    <input type="submit" value="register" />
+    <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+</form>

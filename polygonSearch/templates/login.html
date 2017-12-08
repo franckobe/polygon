@@ -18,5 +18,5 @@
     <input type="submit" value="login" />
     <input type="hidden" name="next" value="{{ request.get_full_path }}" />
 </form>
-    # or if it's not declared urls:
+    {#or if it's not declared urls:#}
 {#   <form action="{% url django.contrib.auth.views.login %}?next={{ request.get_full_path }}" method="post">#}
