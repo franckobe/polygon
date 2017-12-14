@@ -1,22 +1,29 @@
-{% if form.errors %}
-    <p class="error">Sorry, that's not a valid username or password</p>
-{% endif %}
+{% extends "base.html" %}
 
-{% if request.user.is_authenticated %}
-    <p>Vous êtes connecté comme {{ user.username }}</p>
-{% else %}
-    <p>Identifiant ou mot de passe incorrect</p>
-{% endif %}
-<p>Vous souhaitez profiter de nos services, <a href="{% url 'register'%}">Inscrivez-vous</a></p>
-<form action="{% url 'login' %}" method="post">
-    {% csrf_token%}
-    <label for="username">Username:</label>
-    <input type="text" name="username"  id="username">
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password">
+{% block content %}
 
-    <input type="submit" value="login" />
-    <input type="hidden" name="next" value="{{ request.get_full_path }}" />
-</form>
-    {#or if it's not declared urls:#}
-{#   <form action="{% url django.contrib.auth.views.login %}?next={{ request.get_full_path }}" method="post">#}
+    {% if form.errors %}
+        <p class="error">Sorry, that's not a valid username or password</p>
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+        <p>Vous êtes connecté comme {{ user.username }}</p>
+    {% else %}
+        <p>Identifiant ou mot de passe incorrect</p>
+    {% endif %}
+    <p>Vous souhaitez profiter de nos services, <a href="{% url 'register'%}">Inscrivez-vous</a></p>
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token%}
+        <label for="username">Username:</label>
+        <input type="text" name="username"  id="username">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password">
+
+        <input type="submit" value="login" />
+        <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+    </form>
+        {#or if it's not declared urls:#}
+    {#   <form action="{% url django.contrib.auth.views.login %}?next={{ request.get_full_path }}" method="post">#}
+
+
+{% endblock %}
