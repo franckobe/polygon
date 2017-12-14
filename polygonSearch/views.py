@@ -58,6 +58,7 @@ def del_user(request, username):
 
     #ToDo ne pas renvoyer sur la page Index mais sur la page d'acceuil de l'admin
     #Todo A créer page d'admin
+    #ToDo Implémenter ListeUser pour la suppression
     except User.DoesNotExist:
         messages.error(request, "User doesnot exist")
         return render(request, 'index.html')
@@ -67,6 +68,16 @@ def del_user(request, username):
 
     # ToDo ne pas renvoyer sur la page Index mais sur la page d'acceuil de l'admin
     return render(request, 'index.html')
+
+def edit_user(request):
+        if request.method == "POST":
+            form = EditForm(data=request.POST, instance=request.user)
+            if form.is_valid():
+                form.save()
+        else:
+            form = EditForm()
+        # Todo A créer page d'admin
+        return render(request,'index.html' ,locals())
 
 
 
