@@ -6,7 +6,7 @@ register = template.Library()
 @register.simple_tag
 def active_page(request, view_name):
 
-    from django.core.urlresolvers import resolve, Resolver404
+    from django.urls import resolve, Resolver404
     path = resolve(request.path_info)
     if not request:
         return ""
