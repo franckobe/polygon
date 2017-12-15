@@ -39,7 +39,10 @@
                    value="{% if password %}{{ password }}{% endif %}"
             />
         </div>
-        <button type="submit" class="btn btn-primary">Inscription</button>
+        <div class="text-center">
+            <button type="submit" class="btn btn-dark">Inscription</button>
+            <a class="btn btn-outline-dark" href="{% url 'register' %}">J'ai déjà un compte</a>
+        </div>
     </form>
 
 
