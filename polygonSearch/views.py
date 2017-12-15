@@ -1,83 +1,73 @@
-from django.contrib.auth import authenticate, login , logout
-from django.shortcuts import redirect, render
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .form import *
-from .models import User
-from django.contrib.auth import authenticate, login
-from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import redirect, render
+from django.contrib.auth.models import User
 
 
-# Create your views here.
-def connexion(request):
-    if request.method == "POST":
-        form = ConnexionForm(request.POST or None)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            user = authenticate(username=username, password=password)  # Nous vérifions si les données sont correctes
-            if user:  # Si l'objet renvoyé n'est pas None
-                login(request, user)  # nous connectons l'utilisateur
+def login_view(request):
+    next_url = 'login/'+request.GET.get('next') if request.GET.get('next') else 'login'
+
+    if request.user.is_authenticated:
+        return redirect('search')
     else:
-        form = ConnexionForm()
-
-    return render(request, 'login.html', locals())
-
-
-@login_required(login_url="/Login/")
-def Index(request):
-    return redirect('Index.html')
-
-
-#@logout
-def Logout(request):
-    logout(request)
-    return redirect('login.html')
-
-
-def register(request):
-    if request.method == "POST":
-        form = RegisterForm(request.POST or None)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            if form.password == form.passwordVerif:
-                password = form.cleaned_data["password"]
-                user = User(password=password, username=username)
-                user.save()
-    else:
-        form = RegisterForm()
-
-    return render(request, 'login.html', locals())
-
-@staff_member_required
-def del_user(request, username):
-    try:
-        u = User.objects.get(username = username)
-        u.delete()
-        messages.sucess(request, "The user is deleted")
-
-    #ToDo ne pas renvoyer sur la page Index mais sur la page d'acceuil de l'admin
-    #Todo A créer page d'admin
-    #ToDo Implémenter ListeUser pour la suppression
-    except User.DoesNotExist:
-        messages.error(request, "User doesnot exist")
-        return render(request, 'index.html')
-    # ToDo ne pas renvoyer sur la page Index mais sur la page d'acceuil de l'admin
-    except Exception as e:
-        return render(request, 'index.html',{'err':e.message})
-
-    # ToDo ne pas renvoyer sur la page Index mais sur la page d'acceuil de l'admin
-    return render(request, 'index.html')
-
-def edit_user(request):
-        if request.method == "POST":
-            form = EditForm(data=request.POST, instance=request.user)
-            if form.is_valid():
-                form.save()
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            if username and password:
+                user = authenticate(username=username, password=password)
+                if user:
+                    login(request, user)
+                    return redirect('search')
+                else:
+                    error = 'La tentative de connexion a échoué !'
+                    return render(request, 'login.html', locals())
+            else:
+                username_error = False if username else True
+                password_error = False if password else True
+                error = 'Vous devez saisir tous les champs !'
+                return render(request, 'login.html', locals())
         else:
-            form = EditForm()
-        # Todo A créer page d'admin
-        return render(request,'index.html' ,locals())
+            return render(request, 'login.html', locals())
 
 
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect('login')
 
+
+@login_required(login_url='/polygonSearch/login')
+def search_view(request):
+    return render(request, 'search.html', locals())
+
+
+def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('search')
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            password_confirmation = request.POST.get('password_confirmation')
+            if username and password and password_confirmation:
+                if password == password_confirmation:
+                    user = User.objects.create_user(username=username)
+                    if user:
+                        user.set_password(password)
+                        user.save()
+                        return redirect('login')
+                    else:
+                        error = 'La tentative d\'inscription a échoué !'
+                        return render(request, 'register.html', locals())
+                else:
+                    password_error = password_confirmation_error = False if password == password_confirmation else True
+                    error = 'Les mots de passe doivent être identiques !'
+                    return render(request, 'register.html', locals())
+            else:
+                username_error = False if username else True
+                password_error = False if password else True
+                password_confirmation_error = False if password_confirmation else True
+                error = 'Vous devez saisir tous les champs !'
+                return render(request, 'register.html', locals())
+        else:
+            return render(request, 'register.html', locals())
