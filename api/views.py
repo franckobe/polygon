@@ -7,5 +7,5 @@ class PostViewSet(ReadOnlyModelViewSet):
     """
     A simple viewset to retrieve all the keyword
     """
-    queryset = models.Post.objects.all.selected_relateted('Website_page')
-    serializer_class = serializers.PostSerializer
+    queryset = models.Website_word.objects.all().select_related('Website_word')
+    serializer_class = serializers.WebsiteWordSerializer
