@@ -2,12 +2,15 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
-
-
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import authentication_classes, permission_classes, api_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from http.cookies import SimpleCookie
 
 
 def login_view(request):
-    next_url = 'login/'+request.GET.get('next') if request.GET.get('next') else 'login'
 
     if request.user.is_authenticated:
         return redirect('search')
@@ -19,7 +22,11 @@ def login_view(request):
                 user = authenticate(username=username, password=password)
                 if user:
                     login(request, user)
-                    return redirect('search')
+                    c = SimpleCookie()
+                    token = Token.objects.get(user=user)
+                    resp = redirect('search')
+                    resp.set_cookie('token', token.__str__())
+                    return resp
                 else:
                     error = 'La tentative de connexion a échoué !'
                     return render(request, 'login.html', locals())
@@ -35,12 +42,9 @@ def login_view(request):
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-    return redirect('login')
-
-
-@login_required(login_url='/polygonSearch/login')
-def search_view(request):
-    return render(request, 'search.html', locals())
+    resp = redirect('login')
+    resp.delete_cookie('token')
+    return resp
 
 
 def register_view(request):
@@ -73,3 +77,23 @@ def register_view(request):
                 return render(request, 'register.html', locals())
         else:
             return render(request, 'register.html', locals())
+
+
+@login_required(login_url='/polygonSearch/login')
+def search_view(request):
+    user = request.user
+    token = Token.objects.get(user=user)
+    return render(request, 'search.html', locals())
+
+
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+@api_view(['GET'])
+def user_view(request):
+    users = User.objects.all()
+    users_json = []
+    for user in users:
+        users_json.append({
+            "username": user.username
+        })
+    return Response(users_json)
