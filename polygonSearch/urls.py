@@ -9,8 +9,6 @@ urlpatterns = [
     url(r'^search$', views.search_view, name='search'),
     url(r'^register$', views.register_view, name='register'),
     url(r'^authenticate$', apiViews.obtain_auth_token),
-
-
     url(r'^search_result$', views.user_view, name='search_result'),
 
 ]

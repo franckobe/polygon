@@ -78,6 +78,7 @@ def register_view(request):
         else:
             return render(request, 'register.html', locals())
 
+
 @login_required(login_url='/polygonSearch/login')
 def search_view(request):
     user = request.user
