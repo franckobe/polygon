@@ -4,6 +4,8 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
+
+
 def login_view(request):
     next_url = 'login/'+request.GET.get('next') if request.GET.get('next') else 'login'
 
