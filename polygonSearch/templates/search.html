@@ -1,6 +1,38 @@
 {% extends 'base.html' %}
+
+{% block javascript %}
+    <script>
+        $("#inputSearch").change(function (){
+            console.log($(this).val());
+            var keyWord = $(this).val();
+            $.ajax({
+                url: 'https://jsonplaceholder.typicode.com/posts/'+keyWord,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data, status){
+                    console.log(data);
+                    console.log(status);
+                },
+                error: function(resultat, status, erreur){
+                    console.log("Ca marche pas idiot bête : "+data+'   '+status+'   '+erreur);
+                },
+                complete: function(resultat, status){
+                    console.log("finito   "+resultat+"    "+status);
+                }
+            })
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
 
-    <h1>Accueil</h1>
 
+    <h1>Accueil</h1>
+    <form method="get">
+      <div class="form-group">
+        <label for="inputSearch">Recherche</label>
+            <input type="text" class="form-control" id="inputSearch" aria-describedby="searching" placeholder="Entrer un mots">
+        <small id="searchHelp" class="form-text text-muted">Mieux que google, faites nous confiance. Pour chaque recherche une plante un arbre, sauve 3 chiens et soignes 12 cancers.</small>
+      </div>
+    </form>
 {% endblock %}

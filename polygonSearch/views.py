@@ -2,7 +2,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
-
+from django.http import JsonResponse
 
 def login_view(request):
     next_url = 'login/'+request.GET.get('next') if request.GET.get('next') else 'login'
@@ -71,3 +71,4 @@ def register_view(request):
                 return render(request, 'register.html', locals())
         else:
             return render(request, 'register.html', locals())
+
