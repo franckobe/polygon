@@ -26,13 +26,20 @@
 
 {% block content %}
 
+    <form action="{% url 'search_result' %}" id="search_form">
 
-    <h1>Accueil</h1>
-    <form method="get">
-      <div class="form-group">
-        <label for="inputSearch">Recherche</label>
-            <input type="text" class="form-control" id="inputSearch" aria-describedby="searching" placeholder="Entrer un mots">
-        <small id="searchHelp" class="form-text text-muted">Mieux que google, faites nous confiance. Pour chaque recherche une plante un arbre, sauve 3 chiens et soignes 12 cancers.</small>
-      </div>
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="q">Recherche</label>
+            <input type="text" name="q" id="q inputSearch" class="form-control"  placeholder="Entrer un mots"/>
+            <small id="searchHelp" class="form-text text-muted">Mieux que google, faites nous confiance. Pour chaque recherche une plante un arbre, sauve 3 chiens et soignes 12 cancers.</small>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-dark">Go</button>
+        </div>
+
     </form>
+
 {% endblock %}

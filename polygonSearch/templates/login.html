@@ -7,7 +7,7 @@
             {{ error }}
         </div>
     {% endif %}
-    <form method="post" action="{% url 'login' %}">
+    <form method="post" action="{% url 'login' %}" id="login_form">
         {% csrf_token %}
         <input type="hidden" name="next_url" value="{{ next_url }}" />
         <div class="form-group">
