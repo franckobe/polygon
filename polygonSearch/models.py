@@ -269,7 +269,17 @@ class PagesGetter:
             if "href" in link.attrib:
                 href = str(link.attrib['href'])
                 if not href[0] == '#':
-                    self.links[link.text] = link.attrib['href']
+                    # reformating links
+                    #if link begins by /x we add it to the domain name
+                    url = str(self.url)
+                    if href[0] == '/':
+                        p = re.compile('^(https?:\/\/)?([\da-z\.-]+)')
+                        c = p.findall(url)
+                        d = str(c[0][0] + c[0][1])
+                        self.links[link.text] = d + str(link.attrib['href'])
+                        # if link begins by www, http:// we keep it
+                    else:
+                        self.links[link.text] = link.attrib['href']
 
     def getWeight(self, tagName):
         if tagName == 'h1':
