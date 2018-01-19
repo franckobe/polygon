@@ -1,11 +1,21 @@
-from polygonSearch import models
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
 from api import serializers
-from rest_framework.viewsets import ReadOnlyModelViewSet
 
 
-class PostViewSet(ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
-    A simple viewset to retrieve all the keyword
+    API endpoint that allows users to be viewed or edited.
     """
-    queryset = models.Website_word.objects.all().select_related('Website_word')
-    serializer_class = serializers.WebsiteWordSerializer
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = serializers.UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = serializers.GroupSerializer
+
+

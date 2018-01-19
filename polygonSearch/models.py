@@ -34,7 +34,7 @@ class Website_word(models.Model):
     word = models.CharField(max_length=50)
     weight = models.IntegerField(default=1)
     url = models.CharField(max_length=255)
-    id_website_page = models.ForeignKey('Website_domain', on_delete=models.CASCADE, null=True)
+    id_website_page = models.ForeignKey('Website_page', on_delete=models.CASCADE, null=True)
 
 
 class Website_page(models.Model):
