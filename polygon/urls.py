@@ -19,11 +19,12 @@ from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 from rest_framework_swagger.views import get_swagger_view
 
+
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'is_staff')
+        fields = '__all__'
 
 
 # ViewSets define the view behavior.
@@ -36,8 +37,10 @@ class UserViewSet(viewsets.ModelViewSet):
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 
+
 # For api view doc
 schema_view = get_swagger_view(title='Pastebin API')
+
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -45,7 +48,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^polygonSearch/', include('polygonSearch.urls')),
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/docs/', schema_view),
     url(r'^api/', include('api.urls')),
 ]
