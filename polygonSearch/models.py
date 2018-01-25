@@ -69,6 +69,12 @@ class Search_history(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class Website_link_to_visit(models.Model):
+    id_website_link_to_visit = models.AutoField(primary_key=True)
+    url = models.CharField(max_length=128, unique=True)
+    visited_at = models.DateTimeField(auto_now_add=True, null=True)
+
+
 # This code is triggered whenever a new user has been created and saved​
 # Create a token on user's creation.
 # authenticate view
