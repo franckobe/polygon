@@ -97,3 +97,10 @@ def user_view(request):
             "username": user.username
         })
     return Response(users_json)
+
+@permission_classes(IsAuthenticated)
+def preferences_view(request):
+    # if request.method == 'POST':
+    return render(request, 'preferences.html', locals())
+
+
