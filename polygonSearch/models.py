@@ -79,21 +79,51 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 
 class PagesGetter:
+    # url of the page
     url = ''
+    # page results (content of the page)
     pr = ''
+    # list of links
     links = {}
+    # title of the page
     title = ''
+    # all weighted tags with words
     tags = []
+    # bad words (not taken in list)
     bwl = []
+    # the name of the domaine IE www.toto.com
+    domainName = ''
+
 
     def __init__(self, url):
         self.url = url
+        # fills bad words array
         self.initializeBadWordsList()
+        # get the page + fills tags, title and links
+        self.getPage()
+
+    def saveThis(self):
+        #domains
+        dom = Website_domain(name=self.domainName, is_allowed=1)
+        dom = dom.save()
+        #saving pages
+        page = Website_page(url=self.url, title=self.title, id_website_domain_id=dom.id_website_domain)
+        page = page.save()
+        #saving words + weights
+        for tag in self.tags:
+            ws = Website_word(word=tag.get('text'), weight=tag.get('weight'), url=self.url, id_website_page_id=page.id_website_page)
+            ws.save()
+        #saving links
+        #todo : finish it
+        # for link in links:
+
 
     def getPage(self):
         http = urllib3.PoolManager()
         r = http.request('GET', self.url)
         if r.status == 200:
+            # todo : check if the meta robots is noodp
+            self.getDomain()
             self.pr = r.data
             self.pr = html.fromstring(self.pr)
             self.getLinks()
@@ -246,6 +276,7 @@ class PagesGetter:
     def getTag(self, tagName):
         for tag in self.pr.xpath("//" + tagName):
             txt = str(tag.text)
+            # only get words
             wl = re.sub("[^\w]", " ", txt.lower()).split()
             # iterate each word
             for word in wl:
@@ -267,19 +298,21 @@ class PagesGetter:
     def getLinks(self):
         for link in self.pr.xpath("//a"):
             if "href" in link.attrib:
-                href = str(link.attrib['href'])
-                if not href[0] == '#':
-                    # reformating links
-                    #if link begins by /x we add it to the domain name
-                    url = str(self.url)
-                    if href[0] == '/':
-                        p = re.compile('^(https?:\/\/)?([\da-z\.-]+)')
-                        c = p.findall(url)
-                        d = str(c[0][0] + c[0][1])
-                        self.links[link.text] = d + str(link.attrib['href'])
-                        # if link begins by www, http:// we keep it
-                    else:
-                        self.links[link.text] = link.attrib['href']
+                if len(link.attrib['href']) > 0:
+                    href = str(link.attrib['href'])
+                    if not href[0] == '#':
+                        # reformating links
+                        # if link begins by /x we add it to the domain name
+                        if href[0] == '/':
+                            self.links[link.text] = self.domainName + str(link.attrib['href'])
+                            # if link begins by www, http:// we keep it
+                        else:
+                            self.links[link.text] = link.attrib['href']
+
+    def getDomain(self):
+        p = re.compile('^(https?:\/\/)?([\da-z\.-]+)')
+        c = p.findall(self.url)
+        self.domainName = str(c[0][0] + c[0][1])
 
     def getWeight(self, tagName):
         if tagName == 'h1':
