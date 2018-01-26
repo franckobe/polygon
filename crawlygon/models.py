@@ -2,6 +2,7 @@ import re
 import urllib3
 from django.db import models
 from lxml import html
+from django.utils.timezone import now
 
 # Create your models here.
 from polygonSearch.models import Website_domain, Website_page, Website_word, Website_link_to_visit, Website_owner
@@ -296,3 +297,21 @@ class PagesGetter:
             return 10
         elif tagName == 'p':
             return 1
+
+
+class CrawlerInstructor:
+    iterations = 200
+
+    def __init__(self, nbIterations):
+        self.iterations = nbIterations
+        self.crawl()
+
+    def crawl(self):
+        # select the number of self.iterations of links to visit
+        ltv = Website_link_to_visit.objects.all().filter(visited_at__isnull=True)[:self.iterations]
+
+        for link in ltv:
+            # Update the time
+            link.visited_at = now()
+            link.save()
+            pg = PagesGetter(link.url)

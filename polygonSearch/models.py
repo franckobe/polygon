@@ -69,7 +69,7 @@ class Search_history(models.Model):
 class Website_link_to_visit(models.Model):
     id_website_link_to_visit = models.AutoField(primary_key=True)
     url = models.CharField(max_length=128, unique=True)
-    visited_at = models.DateTimeField(auto_now_add=True, null=True)
+    visited_at = models.DateTimeField(null=True)
 
 
 # This code is triggered whenever a new user has been created and saved​
