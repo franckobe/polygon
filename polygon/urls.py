@@ -50,4 +50,5 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^api/docs/', schema_view),
     url(r'^api/', include('api.urls')),
+    url(r'^crawlygon/', include('crawlygon.urls')),
 ]
