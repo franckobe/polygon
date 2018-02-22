@@ -17,6 +17,23 @@ $(function () {
         })
     });
 
+    $('.form_crawl').on('submit',function (e) {
+        e.preventDefault();
+        var token = getCookie('token');
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            headers: {
+                'Authorization': "Token " + token
+            },
+            dataType: 'json',
+            data: $(this).serialize(),
+            success: function (data) {
+                alert("Recherche lancée !")
+            }
+        })
+    });
+
 });
 
 function getCookie(cname) {
