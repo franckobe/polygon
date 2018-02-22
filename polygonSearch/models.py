@@ -37,8 +37,7 @@ class Website_word(models.Model):
 class Website_page(models.Model):
     id_website_page = models.AutoField(primary_key=True)
     url = models.CharField(max_length=255, unique=True)
-    title = models.CharField(max_length=50)
-    content = models.TextField
+    title = models.CharField(max_length=255)
     id_website_domain = models.ForeignKey('Website_domain', on_delete=models.CASCADE)
 
 

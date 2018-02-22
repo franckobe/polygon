@@ -25,17 +25,23 @@ class PagesGetter:
     bwl = []
     # the name of the domaine IE www.toto.com
     domainName = ''
-    #author of the page
+    # author of the page
     author = ''
 
 
     def __init__(self, url):
         self.url = url
+        self.tags = []
         # fills bad words array
         self.initializeBadWordsList()
         # get the page + fills tags, title and links
         self.getPage()
         self.saveThis()
+        print(self.tags)
+        # reset all arrays
+        self.tags = []
+        self.bwl = []
+        self.links = []
 
     def saveThis(self):
         # saving author
@@ -56,11 +62,13 @@ class PagesGetter:
         # saving pages
         page = Website_page(url=self.url, title=self.title, id_website_domain_id=dom.id_website_domain)
         try:
-            page.save()
+            ps = page.save()
+            page = Website_page.objects.last()
         except:
             #todo : en fait vérifier la date !!
-            exit()
-        page = Website_page.objects.last()
+            print('!!! erreur !!!')
+            return
+
         # saving words + weights
         for tag in self.tags:
             ws = Website_word(word=tag.get('text'), weight=tag.get('weight'), url=self.url, id_website_page_id=page.id_website_page)
@@ -81,9 +89,10 @@ class PagesGetter:
             self.getDomain()
             self.pr = r.data
             self.pr = html.fromstring(self.pr)
-            self.getMeta()
-            self.getLinks()
-            self.getTags()
+            if self.getMeta() == 1:
+                self.getTitle()
+                self.getLinks()
+                self.getTags()
 
     def initializeBadWordsList(self):
         self.bwl = ['je',
@@ -146,6 +155,7 @@ class PagesGetter:
                     'd\'',
                     'se',
                     's\'',
+                    'aux',
                     'alors',
                     'au',
                     'aucuns',
@@ -192,6 +202,7 @@ class PagesGetter:
                     'quelles',
                     'quels',
                     'qui',
+                    'qu',
                     'seulement',
                     'si',
                     'sont',
@@ -220,6 +231,7 @@ class PagesGetter:
                     'm',
                     'c',
                     's',
+                    'none',
                     'ces']
 
     def getTags(self):
@@ -268,18 +280,25 @@ class PagesGetter:
     def getMeta(self):
         for meta in self.pr.xpath("//meta"):
             author = ''
-            name = ''
             if "name" in meta.attrib:
                 name = str(meta.attrib['name'])
                 if name.lower() == "robots":
                     content = str(meta.attrib['content'])
                     #todo : gérer le cas du nofollow
                     if not content.lower().find('noindex') == -1:
-                        exit()
+                        return 0
                 if name.lower() == "author":
-                    author = str(meta.attrib['author'])
+                    author = str(meta.attrib['content'])
                     author = author.lower()
             self.author = author
+        return 1
+
+    def getTitle(self):
+        ttl = self.url
+        for title in self.pr.xpath("//title"):
+            ttl = title.text.strip()
+        self.title = ttl
+
 
     def getDomain(self):
         p = re.compile('^(https?:\/\/)?([\da-z\.-]+)')
@@ -300,15 +319,15 @@ class PagesGetter:
 
 
 class CrawlerInstructor:
-    iterations = 200
+    iterations = 0
 
-    def __init__(self, nbIterations):
+    def __init__(self, nbIterations=200):
         self.iterations = nbIterations
         self.crawl()
 
     def crawl(self):
         # select the number of self.iterations of links to visit
-        ltv = Website_link_to_visit.objects.all().filter(visited_at__isnull=True)[:self.iterations]
+        ltv = Website_link_to_visit.objects.all().filter(visited_at__isnull=True)[:int(self.iterations)]
 
         for link in ltv:
             # Update the time
