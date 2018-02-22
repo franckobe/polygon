@@ -4,7 +4,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from api.permissions import IsOwnerOrReadOnly
 from api import serializers
-from api.serializers import KeywordSerializer
+from api.serializers import KeywordSerializer, PageSerializer
+from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.response import Response
 from polygonSearch.models import Website_page, Website_word
 
 
@@ -43,7 +46,7 @@ def word_list(request, sort=None, desc=None):
 
 
 @api_view(['GET', 'DELETE'])
-def word(request, word=None):
+def word(request, word):
     if request.method == 'GET':
         result = Website_word.objects.get(word=word)
         serializer = KeywordSerializer(result, many=False)
@@ -52,3 +55,13 @@ def word(request, word=None):
         result = Website_word.objects.get(word=word)
         result.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def page(request, word):
+    if request.method == 'GET':
+        tempResult = Website_word.objects.get(word=word)
+        tempSerializer = KeywordSerializer(tempResult, many=False)
+        result = Website_page.objects.get(id_website_page=tempSerializer.data['id_website_page'])
+        serializer = PageSerializer(result, many=False)
+        return Response(serializer.data)
