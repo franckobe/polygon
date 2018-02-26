@@ -77,15 +77,15 @@ def results(request):
     nb = request.GET.get('nb') if not None else 10
     p = 0
     nbwords = Website_word.objects.filter(word__contains=word).count()
-    search_results = [
-        {
-            'nb': nbwords
-        }
-    ]
+    pages = []
     words = Website_word.objects.filter(word__contains=word)[int(p):int(nb)]
     for wd in words:
         pid = wd.id_website_page.id_website_page
         result = Website_page.objects.get(id_website_page=pid)
         ps = PageSerializer(result)
-        search_results.append(ps.data)
+        pages.append(ps.data)
+    search_results = {
+        'nb': int(nbwords),
+        'results': pages
+    }
     return Response(search_results)

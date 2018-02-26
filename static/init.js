@@ -13,11 +13,11 @@ $(function () {
             dataType: 'json',
             data: $(this).serialize(),
             success: function (resp) {
-                var html = "<p>"+resp.length+" résultats pour la recherche "+word+"</p>";
-                resp.forEach(function (res) {
+                var html = "<p>"+resp.nb+" résultats pour la recherche "+word+"</p>";
+                resp.results.forEach(function (page) {
                     html += "<div class='result'>";
-                    html +=     "<h3><a href='"+res.url+"'>"+res.title+"</a></h3>";
-                    html +=     "<h5>"+res.url+"</h5>";
+                    html +=     "<h3><a href='"+page.url+"'>"+page.title+"</a></h3>";
+                    html +=     "<h5>"+page.url+"</h5>";
                     html += "</div>";
                 });
                 $('#results').html(html);
