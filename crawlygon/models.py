@@ -1,3 +1,4 @@
+# coding: utf8
 import re
 import urllib3
 from django.db import models
@@ -51,14 +52,14 @@ class PagesGetter:
             own = Website_owner.objects.get(name=self.author)
 
         # saving domains
-        dom = Website_domain(name=self.domainName.encode('utf8'), is_allowed=1, id_owner_id=own.id_owner)
+        dom = Website_domain(name=self.domainName, is_allowed=1, id_owner_id=own.id_owner)
         try:
             dom.save()
             dom = Website_domain.objects.last()
         except:
-            dom = Website_domain.objects.get(name=self.domainName.encode('utf8'))
+            dom = Website_domain.objects.get(name=self.domainName)
         # saving pages
-        page = Website_page(url=self.url.encode('utf8'), title=self.title.encode('utf8'), id_website_domain_id=dom.id_website_domain)
+        page = Website_page(url=self.url, title=self.title, id_website_domain_id=dom.id_website_domain)
         try:
             ps = page.save()
             page = Website_page.objects.last()
@@ -69,7 +70,7 @@ class PagesGetter:
 
         # saving words + weights
         for tag in self.tags:
-            ws = Website_word(word=tag.get('text').encode('utf8'), weight=tag.get('weight'), url=self.url.encode('utf8'), id_website_page_id=page.id_website_page)
+            ws = Website_word(word=tag.get('text'), weight=tag.get('weight'), url=self.url, id_website_page_id=page.id_website_page)
             ws.save()
         # saving links
         for link in self.links:
