@@ -1,17 +1,14 @@
 {% extends 'base.html' %}
 
-{% block javascript %}
-{% endblock %}
-
 {% block content %}
 
-    <form action="{% url 'search_result' %}" id="search_form">
+    <form action="{% url "search_result"  %}" id="search_form">
 
         {% csrf_token %}
 
         <div class="form-group">
             <label for="q">Recherche</label>
-            <input type="text" name="q" id="q inputSearch" class="form-control"  placeholder="Entrez un mot"/>
+            <input type="text" name="q" id="q" class="form-control"  placeholder="Entrez un mot"/>
             <small id="searchHelp" class="form-text text-muted">Mieux que google, faites nous confiance. Pour chaque recherche une plante un arbre, sauve 3 chiens et soignes 12 cancers.</small>
         </div>
 
@@ -20,5 +17,7 @@
         </div>
 
     </form>
+
+    <div id="results"></div>
 
 {% endblock %}

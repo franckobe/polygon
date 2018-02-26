@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^word$', views.word_list),
     url(r'^word/(?P<word>[A-z]+)$', views.word),
     url(r'^page/(?P<word>[A-z]+)$', views.page),
+    url(r'^result$', views.results, name="search_result"),
     # authentication
     url(r'^authenticate$', apiViews.obtain_auth_token),
     url(r'^api-auth/', include('rest_framework.urls')),

@@ -3,6 +3,7 @@ $(function () {
     $('#search_form').on('submit',function (e) {
         e.preventDefault();
         var token = getCookie('token');
+        var word = $('#q').val();
         $.ajax({
             url: $(this).attr('action'),
             type: 'GET',
@@ -11,8 +12,15 @@ $(function () {
             },
             dataType: 'json',
             data: $(this).serialize(),
-            success: function (data) {
-                console.log(data);
+            success: function (resp) {
+                var html = "<p>"+resp.length+" résultats pour la recherche "+word+"</p>";
+                resp.forEach(function (res) {
+                    html += "<div class='result'>";
+                    html +=     "<h3><a href='"+res.url+"'>"+res.title+"</a></h3>";
+                    html +=     "<h5>"+res.url+"</h5>";
+                    html += "</div>";
+                });
+                $('#results').html(html);
             }
         })
     });

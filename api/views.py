@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.permissions import IsOwnerOrReadOnly
 from api import serializers
@@ -65,3 +67,18 @@ def page(request, word):
         result = Website_page.objects.get(id_website_page=tempSerializer.data['id_website_page'])
         serializer = PageSerializer(result, many=False)
         return Response(serializer.data)
+
+
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+@api_view(['GET'])
+def results(request):
+    word = request.GET.get('q')
+    search_results = []
+    words = Website_word.objects.filter(word__contains=word)
+    for wd in words:
+        pid = wd.id_website_page.id_website_page
+        result = Website_page.objects.get(id_website_page=pid)
+        ps = PageSerializer(result)
+        search_results.append(ps.data)
+    return Response(search_results)
