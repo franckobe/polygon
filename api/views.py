@@ -70,12 +70,19 @@ def page(request, word):
 
 
 @authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
+@permission_classes(IsAuthenticated)
 @api_view(['GET'])
 def results(request):
     word = request.GET.get('q')
-    search_results = []
-    words = Website_word.objects.filter(word__contains=word)
+    nb = request.GET.get('nb') if not None else 10
+    p = 0
+    nbwords = Website_word.objects.filter(word__contains=word).count()
+    search_results = [
+        {
+            'nb': nbwords
+        }
+    ]
+    words = Website_word.objects.filter(word__contains=word)[int(p):int(nb)]
     for wd in words:
         pid = wd.id_website_page.id_website_page
         result = Website_page.objects.get(id_website_page=pid)
