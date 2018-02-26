@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from math import ceil
 from rest_framework import viewsets, status, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -74,18 +75,22 @@ def page(request, word):
 @api_view(['GET'])
 def results(request):
     word = request.GET.get('q')
-    nb = request.GET.get('nb') if not None else 10
-    p = 0
-    nbwords = Website_word.objects.filter(word__contains=word).count()
+    nb = int(request.GET.get('nb') if not None else 10)
+    p = int(request.GET.get('p') if not None else 0)
+    offset = (p - 1) * nb
     pages = []
-    words = Website_word.objects.filter(word__contains=word)[int(p):int(nb)]
+    nbwords = int(Website_word.objects.filter(word__contains=word).count())
+    nbp = ceil(nbwords/nb)
+    words = Website_word.objects.filter(word__contains=word).order_by('-weight')[offset:nb]
     for wd in words:
         pid = wd.id_website_page.id_website_page
         result = Website_page.objects.get(id_website_page=pid)
         ps = PageSerializer(result)
         pages.append(ps.data)
     search_results = {
-        'nb': int(nbwords),
+        'nb': nbwords,
+        'nbp': nbp,
+        'curp': p,
         'results': pages
     }
     return Response(search_results)
