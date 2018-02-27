@@ -29,11 +29,13 @@
             </li>
             {% endif %}
         {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                <li class="nav-item">
+                   <a class="nav-link {% active_page request 'crawl_view' %}" href="{% url 'crawl_view' %}">Crawling</a>
+                </li>
+            {% endif %}
             <li class="nav-item">
                 <a class="nav-link {% active_page request 'logout' %}" href="{% url 'logout' %}">Log out</a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link {% active_page request 'preferences' %}" href="{% url 'preferences' %}">Preferences</a>
             </li>
         {%  endif %}
         </ul>
@@ -53,7 +55,8 @@
 <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-  crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 {% block javascript %}
 {% endblock %}

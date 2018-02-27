@@ -14,8 +14,14 @@ $(function () {
     $('.form_crawl').on('submit',function (e) {
         e.preventDefault();
         var token = getCookie('token');
+        var $form = $(this);
+        var $button = $(this).find('button');
+        var txt = $button.text();
+        $button.text("En cours ...");
+        $button.addClass('disabled');
+        $button.attr('disabled','disabled');
         $.ajax({
-            url: $(this).attr('action'),
+            url: $form.attr('action'),
             type: 'POST',
             headers: {
                 'Authorization': "Token " + token
@@ -23,7 +29,14 @@ $(function () {
             dataType: 'json',
             data: $(this).serialize(),
             success: function (data) {
-                alert("Recherche lancée !")
+                $button.removeClass('disabled');
+                $button.text(txt);
+                $button.removeAttr('disabled');
+            },
+            error: function () {
+                $button.removeClass('disabled');
+                $button.text(txt);
+                $button.removeAttr('disabled');
             }
         })
     });
