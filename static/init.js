@@ -58,7 +58,9 @@ function postSearch(form) {
         dataType: 'json',
         data: form.serialize(),
         success: function (resp) {
-            var html = "<p>Page "+resp.curp+" sur "+resp.nbp+" - "+resp.nb+" résultats pour la recherche "+word+"</p>";
+            var pageinfo = resp.nbp > 0 ? "Page "+resp.curp+" sur "+resp.nbp+" - " : "";
+            var resultat = resp.nb > 1 ? resp.nb+" résultats" : "Aucun resultat";
+            var html = "<p>"+pageinfo+resultat+"  pour la recherche \""+word+"\"</p>";
             resp.results.forEach(function (page) {
                 html += "<div class='result'>";
                 html +=     "<h3><a href='"+page.url+"'>"+page.title+"</a></h3>";
@@ -73,34 +75,46 @@ function postSearch(form) {
 }
 
 function pagination(p, nbp) {
-    var first = p === 1 ? 'disabled' : '';
-    var last = p === nbp ? 'disabled' : '';
+    var prev = p === 1 ? 'disabled' : '';
+    var next = p === nbp ? 'disabled' : '';
     var html = "";
-    html += "<ul class='pagination'>";
+    if ( nbp > 1 ) {
+        html += "<ul class='pagination'>";
 
-    html +=     "<li class='page-item " + first + "'>";
-    html +=         "<a href='#' class='page-link' data-p='" + ( p - 1 ) + "'>&laquo;</a>";
-    html +=     "</li>";
-
-    if ( p > 1 ) {
-        html +=     "<li class='page-item'>";
-        html +=         "<a href='#' class='page-link' data-p='" + ( p - 1 ) + "'>" + ( p - 1 ) + "</a>";
+        html +=     "<li class='page-item " + prev + "'>";
+        html +=         "<a href='#' class='page-link' data-p='" + ( p - 1 ) + "'>&laquo;</a>";
         html +=     "</li>";
+
+        if ( p > 1 ) {
+            html +=     "<li class='page-item'>";
+            html +=         "<a href='#' class='page-link' data-p='1'>1</a>";
+            html +=     "</li>";
+        }
+        if ( p > 2 ) {
+            html +=     "<li class='page-item'>";
+            html +=         "<a href='#' class='page-link' data-p='" + ( p - 1 ) + "'>" + ( p - 1 ) + "</a>";
+            html +=     "</li>";
+        }
+
+        html +=     "<li class='page-item disabled'>";
+        html +=         "<a href='#' class='page-link'>" + p + "</a>";
+        html +=     "</li>";
+
+        if ( p < nbp - 1 ) {
+             html +=     "<li class='page-item'>";
+             html +=         "<a href='#' class='page-link' data-p='" + ( p + 1 ) + "'>" + ( p + 1 ) + "</a>";
+             html +=     "</li>";
+        }
+        if ( p < nbp ) {
+            html +=     "<li class='page-item'>";
+            html +=         "<a href='#' class='page-link' data-p='" + ( nbp ) + "'>" + ( nbp ) + "</a>";
+            html +=     "</li>";
+        }
+
+        html +=     "<li class='page-item " + next + "'>";
+        html +=         "<a href='#' class='page-link' data-p='" + ( p + 1 ) + "'>&raquo;</a>";
+        html +=     "</li>";
+        html += "</ul>";
     }
-
-    html +=     "<li class='page-item disabled'>";
-    html +=         "<a href='#' class='page-link'>" + p + "</a>";
-    html +=     "</li>";
-
-    if ( p < nbp ) {
-         html +=     "<li class='page-item'>";
-         html +=         "<a href='#' class='page-link' data-p='" + ( p + 1 ) + "'>" + ( p + 1 ) + "</a>";
-         html +=     "</li>";
-    }
-
-    html +=     "<li class='page-item " + last + "'>";
-    html +=         "<a href='#' class='page-link' data-p='" + ( p + 1 ) + "'>&raquo;</a>";
-    html +=     "</li>";
-    html += "</ul>";
     return html
 }

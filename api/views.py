@@ -81,7 +81,7 @@ def results(request):
     pages = []
     nbwords = int(Website_word.objects.filter(word__contains=word).count())
     nbp = ceil(nbwords/nb)
-    words = Website_word.objects.filter(word__contains=word).order_by('-weight')[offset:nb]
+    words = Website_word.objects.filter(word__contains=word).order_by('-weight')[offset:nb+offset]
     for wd in words:
         pid = wd.id_website_page.id_website_page
         result = Website_page.objects.get(id_website_page=pid)
