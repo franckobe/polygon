@@ -2,6 +2,7 @@ $(function () {
 
     $('#search_form').on('submit',function (e) {
         e.preventDefault();
+        $('#p').val(1);
         postSearch($(this));
     });
     $(document).on('click','.pagination li:not(.disabled) a',function (e) {
