@@ -50,10 +50,10 @@ def word_list(request, sort=None, desc=None):
 
 @api_view(['GET', 'DELETE'])
 def word(request, word):
-	""" get word
-	:param object request:
-	:param str word to search:
-	return word jsonify"""
+    """ get word
+    :param object request:
+    :param str word to search:
+    return word jsonify"""
     if request.method == 'GET':
         result = Website_word.objects.all().filter(word=word)
         serializer = KeywordSerializer(result, many=True)
@@ -66,10 +66,10 @@ def word(request, word):
 
 @api_view(['GET'])
 def page(request, word):
-	""" get the page list linked to a word
-	:param object request:
-	:param str word:
-	return page jsonify"""
+    """ get the page list linked to a word
+    :param object request:
+    :param str word:
+    return page jsonify"""
     if request.method == 'GET':
         tempResult = Website_word.objects.get(word=word)
         tempSerializer = KeywordSerializer(tempResult, many=False)
@@ -82,7 +82,7 @@ def page(request, word):
 @permission_classes(IsAuthenticated)
 @api_view(['GET'])
 def results(request):
-	"""get results"""
+    """get results"""
     word = request.GET.get('q')
     nb = int(request.GET.get('nb') if not None else 10)
     p = int(request.GET.get('p') if not None else 0)
