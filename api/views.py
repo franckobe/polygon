@@ -51,8 +51,8 @@ def word_list(request, sort=None, desc=None):
 @api_view(['GET', 'DELETE'])
 def word(request, word):
     if request.method == 'GET':
-        result = Website_word.objects.get(word=word)
-        serializer = KeywordSerializer(result, many=False)
+        result = Website_word.objects.all().filter(word=word)
+        serializer = KeywordSerializer(result, many=True)
         return Response(serializer.data)
     elif request.method == 'DELETE':
         result = Website_word.objects.get(word=word)
