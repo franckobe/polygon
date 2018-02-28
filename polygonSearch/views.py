@@ -12,6 +12,8 @@ from http.cookies import SimpleCookie
 
 def login_view(request):
 
+    next_url = request.GET.get('next') if not request.GET.get('next') is None else '/polygonSearch/search'
+
     if request.user.is_authenticated:
         return redirect('search')
     else:
@@ -24,7 +26,7 @@ def login_view(request):
                     login(request, user)
                     c = SimpleCookie()
                     token = Token.objects.get(user=user)
-                    resp = redirect('search')
+                    resp = redirect(next_url)
                     resp.set_cookie('token', token.__str__())
                     return resp
                 else:

@@ -1,10 +1,9 @@
 main {
-    padding-top: 40px;
+    margin: 40px 0;
+    min-height: 80vh;
 }
 footer {
-    position: fixed;
     height: 100px;
-    bottom: 0;
     width: 100%;
     color: rgba(255,255,255,.5);
 }

@@ -344,7 +344,7 @@ class PagesGetter:
                     's',
                     'none',
                     'ces']
-
+        
 
 class CrawlerInstructor:
     iterations = 0

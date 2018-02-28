@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <form action="{% url 'crawl' %}" method="post" class="form_crawl">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="url">Url à inspecter</label>
+            <input type="url" class="form-control" name="url" id="url" />
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-dark">Crawler !</button>
+        </div>
+
+    </form>
+
+    <form action="{% url 'crawl_links' %}" method="post" class="form_crawl">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="iteration">Itérations</label>
+            <input type="number" class="form-control" name="iteration" id="iteration" />
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-dark">Lancer les itérations de la mort !</button>
+        </div>
+
+    </form>
+
+{% endblock %}
