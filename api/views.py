@@ -93,7 +93,7 @@ def results(request):
         'curp': p,
         'results': pages
     }
-    if not request.GET.get('history') is None:
+    if not request.GET.get('history') is None and p == 1:
         search_history = Search_history(user=request.user, word=word, nb_results=nbwords)
         search_history.save()
     return Response(search_results)
