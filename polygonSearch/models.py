@@ -75,9 +75,9 @@ class Website_owner(models.Model):
 
 class Search_history(models.Model):
     id_search_history = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    id_website_page = models.ForeignKey('Website_page', on_delete=models.CASCADE)
-    id_website_word = models.ForeignKey('Website_word', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nb_results = models.IntegerField(default=0)
+    word = models.CharField(max_length=100, default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -88,6 +88,7 @@ class Website_link_to_visit(models.Model):
 
     def __str__(self):
         return self.url
+
 
 # This code is triggered whenever a new user has been created and saved​
 # Create a token on user's creation.

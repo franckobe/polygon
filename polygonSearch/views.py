@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from http.cookies import SimpleCookie
 
+from polygonSearch.models import Search_history
+
 
 def login_view(request):
 
@@ -100,9 +102,14 @@ def user_view(request):
         })
     return Response(users_json)
 
+
 @permission_classes(IsAuthenticated)
 def preferences_view(request):
     # if request.method == 'POST':
     return render(request, 'preferences.html', locals())
 
 
+@login_required(login_url='/polygonSearch/login')
+def history_view(request):
+    history = Search_history.objects.all().filter(user=request.user).order_by('-created_at')
+    return render(request, 'history.html', locals())

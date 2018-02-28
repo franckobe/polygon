@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Mot</th>
+            <th>Nb résultats</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for search in history %}
+            <tr>
+                <td>{{ search.word }}</td>
+                <td>{{ search.nb_results }}</td>
+                <td>{{ search.created_at }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+{% endblock %}

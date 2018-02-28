@@ -11,7 +11,7 @@ from api.serializers import KeywordSerializer, PageSerializer
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
-from polygonSearch.models import Website_page, Website_word
+from polygonSearch.models import Website_page, Website_word, Search_history
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -93,4 +93,7 @@ def results(request):
         'curp': p,
         'results': pages
     }
+    if not request.GET.get('history') is None:
+        search_history = Search_history(user=request.user, word=word, nb_results=nbwords)
+        search_history.save()
     return Response(search_results)
